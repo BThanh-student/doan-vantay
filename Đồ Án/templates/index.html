@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đồ án KH-KT 2025-2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; line-height: 1.6; background-color: #f4f7f6; }
+        header { background: #007bff; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1, h2 { margin: 5px 0; }
+        .box, .status { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        label { font-weight: bold; display: inline-block; width: 120px; margin-bottom: 10px; }
+        input, select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px; width: 200px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 4px; transition: 0.3s; font-weight: bold; }
+        #btnExport { background: #17a2b8; color: white; margin-right: 10px; }
+        #btnDelete { background: #dc3545; color: white; }
+        button:hover { opacity: 0.8; }
+        #displayArea { width: 100%; margin-top: 15px; font-family: 'Consolas', monospace; padding: 15px; border: 1px solid #ccc; border-radius: 4px; background: #fafafa; font-size: 16px; font-weight: bold; min-height: 250px; }
+        #realtimeClock { font-size: 28px; font-weight: bold; color: #ffc107; text-shadow: 1px 1px 2px #000; margin: 10px 0; }
+        hr { border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 10px 0; }
+        .navbar {
+    background-color: #1a1a1a; /* Màu tối cho chuyên nghiệp */
+    padding: 10px 0;
+    width: 100%;
+    /* Nếu muốn menu dính trên đầu khi cuộn trang thì dùng line dưới, không thì bỏ qua */
+    /* position: sticky; top: 0; z-index: 1000; */
+}
+
+.nav-container {
+    max-width: 1200px; /* Độ rộng tối đa của nội dung menu */
+    margin: 0 auto; /* Căn giữa khung menu */
+    display: flex; /* Kích hoạt Flexbox */
+    justify-content: space-between; /* Đẩy Menu sang trái, Nút sang phải */
+    align-items: center; /* Căn giữa các item theo chiều dọc */
+    padding: 0 20px;
+    border-radius: 8px;
+}
+
+.menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu li {
+    margin-right: 30px;
+}
+
+.menu li a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.menu li a:hover {
+    color: #00d4ff; /* Màu xanh tech khi di chuột vào */
+}
+
+/* Style cho nút Đăng nhập bên phải */
+.login-btn {
+    background-color: #00d4ff;
+    color: #000;
+    border: none;
+    padding: 8px 25px;
+    border-radius: 20px; /* Bo tròn nút cho hiện đại */
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px #00d4ff; /* Hiệu ứng phát sáng nhẹ */
+}
+
+#login-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #121212; /* Nền tối cho ngầu */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Luôn nằm trên cùng */
+}
+.login-box {
+    background: orange;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #00d4ff;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hệ Thống Quản Lý Học Sinh</h1>
+        <div class="banner">
+            <h2>Đề tài: ỨNG DỤNG CẢM BIẾN VÂN TAY TRONG QUẢN LÝ ĐIỂM DANH</h2>
+            <p>Thực hiện: Nhóm học sinh lớp 12A4 - THPT Đồ Sơn</p>
+            <hr>
+            <p>Giáo viên hướng dẫn: Ths. Trần Văn Hào</p>
+        </div>
+        <div id="realtimeClock">00:00:00</div>
+
+    </header>
+    <nav class="navbar">
+    <div class="nav-container">
+        <ul class="menu">
+            <li><a href="#">Trình điều khiển</a></li>
+            <li><a href="#">Quản lý học sinh</a></li>
+            <li><a href="#">Báo cáo</a></li>
+            <li><a href="#">Liên hệ</a></li>
+        </ul>
+
+        <div class="auth-section">
+            <button class="login-btn">Đăng nhập</button>
+        </div>
+    </div>
+</nav>
+    
+    <div class="box">
+        <label for="name">Họ và tên:</label>
+        <input type="text" id="name" placeholder="Chờ quét vân tay..." readonly>
+        
+        <label for="class">Lớp:</label>
+        <select id="class" disabled>
+            <option value="12A4" selected>12A4</option>
+        </select>
+
+        <label for="fingerprint">Cảm biến:</label>
+        <input type="text" id="fingerprint" value="Sẵn sàng quét..." readonly>
+    </div>
+
+    <div class="status">
+        <label for="status">Trạng thái:</label>
+        <input type="text" id="status" style="width: 350px;" readonly placeholder="Chưa có dữ liệu">
+        
+        <label for="dinhdanh">Định danh:</label>
+        <input type="text" id="dinhdanh" readonly>
+        <br><br>
+        <label for="checkDate">Ngày quét:</label>
+        <input type="date" id="checkDate">
+        <br><br>
+        
+        <button id="btnExport">Xuất file Excel (.csv)</button>
+        <button id="btnDelete">Xóa danh sách phiên</button>
+
+        <h3>DANH SÁCH HỌC SINH ĐÃ ĐIỂM DANH (12A4):</h3>
+        <textarea id="displayArea" readonly placeholder="Danh sách sẽ hiện ra tại đây sau khi bạn quét vân tay..."></textarea>
+    </div>
+
+<script>
+    let studentList = []; 
+    let lastScannedName = ""; 
+
+    // 1. Đồng hồ thời gian thực
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('realtimeClock').innerText = "Bây giờ là: " + now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    document.getElementById('checkDate').valueAsDate = new Date();
+
+    // 2. Hàm hiển thị danh sách (kèm thời gian)
+    function renderList() {
+        const display = document.getElementById('displayArea');
+        // Sắp xếp danh sách theo tên
+        let sortedList = [...studentList].sort((a, b) => a.name.localeCompare(b.name));
+        display.value = sortedList.map((s, index) => 
+            `${index + 1}. [${s.time}] - 12A4 - ${s.name}`
+        ).join('\n');
+    }
+
+    // 3. Hàm xử lý điểm danh TỰ ĐỘNG
+    function autoAttendance(name) {
+        if (name && name !== "Chưa biết") {
+            const isExist = studentList.some(s => s.name === name);
+            if(!isExist) {
+                const now = new Date();
+                const timeIn = now.getHours().toString().padStart(2, '0') + ":" + 
+                               now.getMinutes().toString().padStart(2, '0');
+                
+                studentList.push({ name: name, class: "12A4", time: timeIn });
+                renderList();
+                document.getElementById('status').value = "✅ Thành công: " + name;
+            } else {
+                document.getElementById('status').value = "⚠️ " + name + " đã có trong danh sách!";
+            }
+        }
+    }
+
+    // 4. Lấy dữ liệu từ Python mỗi giây
+    setInterval(() => {
+        fetch('/get_data')
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.name && data.name !== "" && data.name !== lastScannedName) {
+                    // Cập nhật giao diện
+                    document.getElementById('name').value = data.name;
+                    document.getElementById('dinhdanh').value = "ID: " + data.id;
+                    document.getElementById('fingerprint').value = "Đã xác thực ✅";
+                    
+                    // Gọi hàm tự động điểm danh
+                    autoAttendance(data.name); 
+
+                    // Chốt chặn 3 giây để tránh quét trùng 1 người liên tục
+                    lastScannedName = data.name;
+                    setTimeout(() => { 
+                        lastScannedName = ""; 
+                        document.getElementById('fingerprint').value = "Sẵn sàng quét...";
+                    }, 3000);
+                }
+            })
+            .catch(err => console.log("Đang đợi cảm biến..."));
+    }, 1000);
+
+    // 5. Nút Xuất Excel (.csv)
+    document.getElementById('btnExport').addEventListener('click', () => {
+        if (studentList.length === 0) {
+            alert("Danh sách đang trống!");
+            return;
+        }
+        let csvContent = "\uFEFFSTT,Lớp,Họ và Tên,Giờ điểm danh\n";
+        studentList.forEach((s, index) => {
+            csvContent += `${index + 1},12A4,${s.name},${s.time}\n`;
+        });
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "Diem_Danh_12A4.csv";
+        link.click();
+    });
+
+    // 6. Nút Xóa danh sách
+    document.getElementById('btnDelete').addEventListener('click', () => {
+        if(confirm("Bạn có chắc muốn xóa sạch danh sách hiện tại?")) {
+            studentList = [];
+            renderList();
+            document.getElementById('name').value = "";
+            document.getElementById('status').value = "Đã xóa danh sách.";
+        }
+    });
+
+    function checkLogin() {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+
+    // Chỗ này bro có thể đổi admin/123 thành ý mình
+    if (user === 'admin' && pass === '123') {
+        document.getElementById('login-overlay').style.display = 'none';
+    } else {
+        document.getElementById('error-msg').style.display = 'block';
+    }
+}
+</script>
+
+<div id="login-overlay">
+    <div class="login-box">
+        <h2>HỆ THỐNG QUẢN LÝ 12A4</h2>
+        <input type="text" id="username" placeholder="Tên đăng nhập">
+        <input type="password" id="password" placeholder="Mật khẩu">
+        <button onclick="checkLogin()">Vào hệ thống</button>
+        <p id="error-msg" style="color: red; display: none;">Sai tài khoản rồi bro!</p>
+    </div>
+</div>
+
+</body>
+<footer>
+    <div class="box_model">
+        <h2>Liên hệ:</h2>
+        <p><i class="fas fa-envelope"></i> Email:darkgrai@gmail.com</p>
+        <p><i class="fas fa-phone"></i> Số điện thoại: 0123456789</p>
+        <p><i class="fas fa-map-marker-alt"></i> Địa chỉ: 197 Lý Thánh Tông,Phường Đồ Sơn, Hải Phòng</p>
+    </div>
+    <p style="text-align: center; color: #888; font-size: 14px;">&copy; 2026 Nhóm học sinh lớp 12A4 - THPT Đồ Sơn. All rights reserved.</p>
+    
+</footer>
+</html>
